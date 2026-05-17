@@ -14,33 +14,64 @@ const Player = () => {
     typeof: ""
   })
 
-  const options = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxMTkyOTk2OGI2NmI4Y2QxMTllNDUxOWRkYzQzODFhZCIsIm5iZiI6MTc0NjIwODIzMi40MjEsInN1YiI6IjY4MTUwNWU4Y2RhMzk4NzNiMjAzMGM4YSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.kFpU93ktAI_gz0UkIj-Pu0eiDe-1-nXuNcrEhKwckvQ'
-    }
-  };
-  
   useEffect(()=>{
+    if (!id) return;
+    if (!import.meta.env.VITE_TMDB_BEARER) {
+      console.warn('VITE_TMDB_BEARER is not set — skipping TMDB fetch in Player.');
+      setApiData({
+        name: "Default Trailer",
+        key: "tgbNymZ7vqY",
+        published_at: "2024-01-01",
+        type: "Trailer"
+      });
+      return;
+    }
+
+    const options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${import.meta.env.VITE_TMDB_BEARER}`,
+      },
+    };
+
     fetch(`https://api.themoviedb.org/3/movie/${id}/videos?language=en-US`, options)
     .then(res => res.json())
-    .then(res => setApiData(res.results[0]))
-    .catch(err => console.error(err));
-  },[])
+    .then(res => {
+      if(res.results && res.results.length > 0) {
+        setApiData(res.results[0]);
+      } else {
+        setApiData({
+          name: "Default Trailer",
+          key: "tgbNymZ7vqY",
+          published_at: "2024-01-01",
+          type: "Trailer"
+        });
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      setApiData({
+        name: "Default Trailer",
+        key: "tgbNymZ7vqY",
+        published_at: "2024-01-01",
+        type: "Trailer"
+      });
+    });
+  },[id])
 
   return (
     <div className='player'>
       <img src={back_arrow_icon} alt="" onClick={()=>{navigate(-2)}}/>
       <iframe width='90%' height='90%'
-         src={`https://www.youtube.com/embed/${apiData.key}`}
-         title='trailer'
-         frameBorder='0' allowFullScreen></iframe>
-         <div className="player-info">
-          <p>{apiData.published_at.slice(0,10)}</p>
-          <p>{apiData.name}</p>
-          <p>{apiData.type}</p>
-         </div>
+        src={`https://www.youtube.com/embed/${apiData?.key || ''}`}
+        title='trailer'
+        frameBorder='0' allowFullScreen></iframe>
+        <div className="player-info">
+         <p>{apiData?.published_at ? apiData.published_at.slice(0,10) : ''}</p>
+         <p>{apiData?.name || ''}</p>
+         <p>{apiData?.type || ''}</p>
+        </div>
     </div>
   )
 }

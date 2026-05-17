@@ -7,8 +7,12 @@ import hero_title from '../../assets/hero_title.png'
 import info_icon from '../../assets/info_icon.png'
 import TitleCards from '../../Components/TitleCards/TitleCards'
 import Footer from '../../Components/Footer/Footer'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 const Home = () => {
+  const navigate = useNavigate();
+
   return (
     <div className='home'>
       <Navbar />
@@ -18,8 +22,8 @@ const Home = () => {
           <img src={hero_title} alt="" className='caption-img'/>
           <p>Discovering his ties to a secret ancient order, a young man living in modern Istanbul embarks on a quest to save the site from an immortal enemy</p>
           <div className="hero-btns">
-            <button className='btn'><img src={play_icon} alt="" />Play</button>
-            <button className='btn dark-btn'><img src={info_icon} alt="" />More Info</button>
+            <button className='btn' onClick={() => navigate('/player/823464')}><img src={play_icon} alt="" />Play</button>
+            <button className='btn dark-btn' onClick={() => toast.info("More Info coming soon!")}><img src={info_icon} alt="" />More Info</button>
           </div>
           <TitleCards />
         </div>

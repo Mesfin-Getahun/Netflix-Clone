@@ -26,11 +26,11 @@ const user_auth = async (event)=>{
       <img src={logo} alt="" className='login-logo'/>
       <div className="login-form">
         <h1>{signState}</h1>
-        <form action="">
-          {signState === "Sign Up"? <input value={name} onChange={(e)=>{setName(e.target.value)}} type="text" placeholder='Your Name' />: ""}
-          <input value={email} onChange={(e)=>{setEmail( e.target.value)}} type="text" placeholder='Email' />
+        <form onSubmit={user_auth}>
+          {signState === "Sign Up"? <input value={name} onChange={(e)=>{setName(e.target.value)}} type="text" placeholder='Your Name' />: null}
+          <input value={email} onChange={(e)=>{setEmail( e.target.value)}} type="email" placeholder='Email' />
           <input value={password} onChange={(e)=>{setPassword(e.target.value)}} type="password" placeholder='password'/>
-          <button onClick={user_auth} type='submit'>{signState}</button>
+          <button type='submit'>{signState}</button>
           <div className="form-help">
             <div className="remember">
               <input type="checkbox" />

@@ -12,12 +12,12 @@ import { toast } from "react-toastify";
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD_4owd0akU0f5X7b6oIdwi3ZxMWGQPevU",
-  authDomain: "netflix-clone-1047b.firebaseapp.com",
-  projectId: "netflix-clone-1047b",
-  storageBucket: "netflix-clone-1047b.firebasestorage.app",
-  messagingSenderId: "714211560101",
-  appId: "1:714211560101:web:e2d64a2c0fa621db309b4c"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase
@@ -25,21 +25,21 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const signup = async (name, email, password)=>{
-    try{
-       const res = await createUserWithEmailAndPassword(auth, email, password);
-       const user = res.user;
-       await addDoc(collection(db, "user"), {
-        uid: user.uid,
-        name,
-        AuthProvider: "local",
-        email,
-       });
-    }catch(error)
-    {
-      console.log(error);
-   toast.error(error.code.split('/')[1].split('-').join(" "));
-    }
+const signup = async (name, email, password) => {
+   try{
+     const res = await createUserWithEmailAndPassword(auth, email, password);
+     const user = res.user;
+     await addDoc(collection(db, "user"), {
+      uid: user.uid,
+      name,
+      AuthProvider: "local",
+      email,
+     });
+   }catch(error)
+   {
+    console.log(error);
+    toast.error(error.code?.split('/')?.[1]?.split('-')?.join(' ') || 'An error occurred');
+   }
 
 }
 
@@ -48,11 +48,7 @@ const login = async (email, password) => {
     await signInWithEmailAndPassword(auth, email, password);
   } catch (error) {
     console.log(error);
-    if (error.code) {
-      toast.error(error.code.split('/')[1].split('-').join(' '));
-    } else {
-      toast.error("An unexpected error occurred.");
-    }
+    toast.error(error.code?.split('/')?.[1]?.split('-')?.join(' ') || 'An unexpected error occurred.');
   }
 };
 
