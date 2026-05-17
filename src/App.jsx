@@ -13,6 +13,7 @@ const Player = lazy(() => import('./Pages/Player/Player'));
 const App = () => {
 
   const navigate = useNavigate();
+  const [loading, setLoading] = React.useState(true);
 
   useEffect(()=>{
     const unsub = onAuthStateChanged(auth, async (user)=>{
@@ -25,11 +26,20 @@ const App = () => {
         console.log("Logged Out");
         navigate('/login');
       }
+      setLoading(false);
     })
 
     return () => unsub();
 
   },[navigate])
+
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#000' }}>
+        <img src="/netflix_spinner.gif" alt="Loading..." style={{ width: '60px' }} onError={(e) => e.target.style.display = 'none'} />
+      </div>
+    )
+  }
 
   return (
     <>
